@@ -19,7 +19,7 @@ export default function SalesOrder() {
         withCredentials: true,
       }
     );
-    console.log(data);
+    console.log("InventoryData: ", data);
     setProductsData(data);
 
     return data;
@@ -67,9 +67,9 @@ export default function SalesOrder() {
                   style={{
                     backgroundColor: !item.min_stock
                       ? ""
-                      : item.stock < item.min_stock
+                      : item.qty_in_stock < item.min_stock
                       ? "red"
-                      : item.stock > item.max_stock
+                      : item.qty_in_stock > item.max_stock
                       ? "green"
                       : "yellow",
                   }}
