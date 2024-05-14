@@ -31,7 +31,6 @@ export default function Dashboard() {
       <h1 className="text-center">Dashboard</h1>
       <br />
       <h1 className="text-center">List of Products</h1>
-
       <div style={{ textAlign: "center" }}>
         {user.category === "vendor" ? (
           <Button variant="primary" onClick={showAddProductModalHandler}>
@@ -40,7 +39,8 @@ export default function Dashboard() {
         ) : null}
       </div>
       <br />
-      <Product />
+      {user.category !== "delivery" ? <Product /> : null}
+
       <br />
 
       {user.category === "user" ? (

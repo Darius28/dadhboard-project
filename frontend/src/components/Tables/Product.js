@@ -37,6 +37,7 @@ export default function Product() {
 
   return (
     <>
+      <h1 className="text-center">List of Products</h1>
       <Table striped bordered hover>
         <thead>
           <th>Sl No</th>
