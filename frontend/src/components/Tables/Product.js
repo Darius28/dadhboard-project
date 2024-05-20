@@ -4,6 +4,7 @@ import { Table, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BackendUrl } from "../../utils/BackendUrl";
+import { toast } from "react-toastify";
 
 export default function Product() {
   const {
@@ -35,6 +36,16 @@ export default function Product() {
     console.log("descriptionHandler: ", itemData);
   };
 
+  const deleteItemHandler = async (itemId) => {
+    const { data } = await axios.post(
+      `${BackendUrl}/delete-item`,
+      { itemId },
+      { withCredentials: true }
+    );
+    navigate("/dashboard");
+    toast.success("Item deteted.");
+  };
+
   return (
     <>
       <h1 className="text-center">List of Products</h1>
@@ -48,6 +59,7 @@ export default function Product() {
           <th>Stock</th>
           <th>Updated By</th>
           <th>Updated On</th>
+          <th>Action</th>
         </thead>
         <tbody>
           {productsData.map((item, i) => {
@@ -64,6 +76,14 @@ export default function Product() {
                 <td>{item.stock}</td>
                 <td>{item.updated_by}</td>
                 <td>{item.updated_on}</td>
+                <td>
+                  <Button
+                    variant="danger"
+                    onClick={deleteItemHandler.bind(null, item._id)}
+                  >
+                    Delete
+                  </Button>
+                </td>
               </tr>
             );
           })}

@@ -531,3 +531,17 @@ export const getSalesAndPurchaseData = async (req, res) => {
     console.log(err);
   }
 };
+
+export const deleteItem = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  try {
+    const { itemId } = req.body;
+    await Product.deleteOne({
+      _id: itemId,
+    });
+    res.send({ ok: true });
+  } catch (err) {
+    console.log(err);
+  }
+};

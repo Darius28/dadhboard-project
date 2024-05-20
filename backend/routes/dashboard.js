@@ -17,6 +17,7 @@ import {
   setMinMaxStock,
   getTopBarChartData,
   getSalesAndPurchaseData,
+  deleteItem,
 } from "../controllers/dashboard";
 const router = express.Router();
 
@@ -40,5 +41,6 @@ router.post("/update-vendor-item", validJwt, updateVendorItem);
 router.post("/set-min-max-stock", validJwt, setMinMaxStock);
 router.get("/get-top-bar-chart-data", validJwt, getTopBarChartData);
 router.get("/get-sales-and-purchase-data", validJwt, getSalesAndPurchaseData);
+router.post("/delete-item", validJwt, deleteItem);
 
 module.exports = router;
