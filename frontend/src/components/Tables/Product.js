@@ -1,18 +1,21 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { Context } from "../../context";
-import { Table, Button } from "react-bootstrap";
+import { Table, Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BackendUrl } from "../../utils/BackendUrl";
 import { toast } from "react-toastify";
 
 export default function Product() {
+  const searchRef = useRef();
   const {
     state: { refreshProducts, user },
   } = useContext(Context);
 
   const navigate = useNavigate();
   const [productsData, setProductsData] = useState([]);
+  const [searchData, setSearchData] = useState([]);
+  const [showSearchData, setShowSearchData] = useState(false);
   const getData = async () => {
     const { data } = await axios.post(
       `${BackendUrl}/get-products`,
@@ -46,9 +49,44 @@ export default function Product() {
     toast.success("Item deteted.");
   };
 
+  const searchProductsHandler = async () => {
+    setShowSearchData(true);
+    const search = searchRef.current.value;
+    console.log(search);
+    const { data } = await axios.post(
+      `${BackendUrl}/search-item`,
+      { search },
+      { withCredentials: true }
+    );
+    console.log("searchData: ", data);
+    setSearchData(data);
+  };
+
+  const clearSearchHandler = async () => {
+    setShowSearchData(false);
+    setSearchData([]);
+    searchRef.current.value = "";
+  };
+
   return (
     <>
       <h1 className="text-center">List of Products</h1>
+      {user.category === "user" ? (
+        <div style={{ width: "600px", margin: "auto" }}>
+          <InputGroup className="mb-3">
+            <Form.Control
+              aria-label="Text input with dropdown button"
+              ref={searchRef}
+            />
+            <Button variant="outline-success" onClick={searchProductsHandler}>
+              Search Products
+            </Button>
+            <Button variant="outline-danger" onClick={clearSearchHandler}>
+              Clear Search
+            </Button>
+          </InputGroup>
+        </div>
+      ) : null}
       <Table striped bordered hover>
         <thead>
           <th>Sl No</th>
@@ -59,34 +97,64 @@ export default function Product() {
           <th>Stock</th>
           <th>Updated By</th>
           <th>Updated On</th>
-          <th>Action</th>
+          {user.category === "vendor" ? <th>Action</th> : null}
         </thead>
         <tbody>
-          {productsData.map((item, i) => {
-            return (
-              <tr
-                key={item._id}
-                onClick={descriptionHandler.bind(null, item, "product")}
-              >
-                <td>{i + 1}</td>
-                <td>{item._id}</td>
-                <td>{item.product_name}</td>
-                <td>{item.description}</td>
-                <td>{item.cost}</td>
-                <td>{item.stock}</td>
-                <td>{item.updated_by}</td>
-                <td>{item.updated_on}</td>
-                <td>
-                  <Button
-                    variant="danger"
-                    onClick={deleteItemHandler.bind(null, item._id)}
+          {showSearchData === false
+            ? productsData.map((item, i) => {
+                return (
+                  <tr
+                    key={item._id}
+                    onClick={descriptionHandler.bind(null, item, "product")}
                   >
-                    Delete
-                  </Button>
-                </td>
-              </tr>
-            );
-          })}
+                    <td>{i + 1}</td>
+                    <td>{item._id}</td>
+                    <td>{item.product_name}</td>
+                    <td>{item.description}</td>
+                    <td>{item.cost}</td>
+                    <td>{item.stock}</td>
+                    <td>{item.updated_by}</td>
+                    <td>{item.updated_on}</td>
+                    {user.category === "vendor" ? (
+                      <td>
+                        <Button
+                          variant="danger"
+                          onClick={deleteItemHandler.bind(null, item._id)}
+                        >
+                          Delete
+                        </Button>
+                      </td>
+                    ) : null}
+                  </tr>
+                );
+              })
+            : searchData.map((item, i) => {
+                return (
+                  <tr
+                    key={item._id}
+                    onClick={descriptionHandler.bind(null, item, "product")}
+                  >
+                    <td>{i + 1}</td>
+                    <td>{item._id}</td>
+                    <td>{item.product_name}</td>
+                    <td>{item.description}</td>
+                    <td>{item.cost}</td>
+                    <td>{item.stock}</td>
+                    <td>{item.updated_by}</td>
+                    <td>{item.updated_on}</td>
+                    {user.category === "vendor" ? (
+                      <td>
+                        <Button
+                          variant="danger"
+                          onClick={deleteItemHandler.bind(null, item._id)}
+                        >
+                          Delete
+                        </Button>
+                      </td>
+                    ) : null}
+                  </tr>
+                );
+              })}
         </tbody>
       </Table>
     </>

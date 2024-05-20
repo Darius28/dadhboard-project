@@ -545,3 +545,19 @@ export const deleteItem = async (req, res) => {
     console.log(err);
   }
 };
+
+export const searchItem = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  try {
+    const { search } = req.body;
+    console.log("SEARCH ====>: ", search);
+    const data = await Product.find({
+      product_name: { $regex: search, $options: "i" },
+    });
+    res.send(data);
+    console.log("SEARCH DATA =====> ", data);
+  } catch (err) {
+    console.log(err);
+  }
+};

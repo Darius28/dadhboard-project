@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef } from "react";
 import { Context } from "../../context";
 import Product from "../Tables/Product";
 import { Button } from "react-bootstrap";
@@ -6,6 +6,8 @@ import PurchaseOrder from "../Tables/PurchaseOrder";
 import SalesOrder from "../SalesOrder/SalesOrder";
 import { useNavigate } from "react-router-dom";
 import SalesStatus from "../SalesStatus/SalesStatus";
+import axios from "axios";
+import { BackendUrl } from "../../utils/BackendUrl";
 
 export default function Dashboard() {
   const {
@@ -30,7 +32,7 @@ export default function Dashboard() {
     <>
       <h1 className="text-center">Dashboard</h1>
       <br />
-      <h1 className="text-center">List of Products</h1>
+
       <div style={{ textAlign: "center" }}>
         {user.category === "vendor" ? (
           <Button variant="primary" onClick={showAddProductModalHandler}>
