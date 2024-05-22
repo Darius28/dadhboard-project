@@ -1,9 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Table } from "react-bootstrap";
+import { Table, Button } from "react-bootstrap";
 import { Context } from "../../context";
 import axios from "axios";
 import { BackendUrl } from "../../utils/BackendUrl";
 import { useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 export default function PurchaseOrder() {
   const navigate = useNavigate();
@@ -34,8 +36,29 @@ export default function PurchaseOrder() {
     navigate(`/dashboard/${type}/${itemData._id}`);
   };
 
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(productsData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+    });
+
+    saveAs(blob, "purchase-order.xlsx");
+  };
+
   return (
     <>
+      <div style={{ textAlign: "center" }}>
+        <Button variant="success" onClick={exportToExcel}>
+          Export Data (.csv)
+        </Button>
+      </div>
+      <br />
       <Table striped bordered hover>
         <thead>
           <th>Sl No</th>

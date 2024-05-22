@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BackendUrl } from "../../utils/BackendUrl";
 import { toast } from "react-toastify";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 export default function Product() {
   const searchRef = useRef();
@@ -68,6 +70,21 @@ export default function Product() {
     searchRef.current.value = "";
   };
 
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(productsData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+    });
+
+    saveAs(blob, "vendor-data.xlsx");
+  };
+
   return (
     <>
       <h1 className="text-center">List of Products</h1>
@@ -87,6 +104,12 @@ export default function Product() {
           </InputGroup>
         </div>
       ) : null}
+      <div style={{ textAlign: "center" }}>
+        <Button variant="success" onClick={exportToExcel}>
+          Export Data (.csv)
+        </Button>
+      </div>
+      <br />
       <Table striped bordered hover>
         <thead>
           <th>Sl No</th>
