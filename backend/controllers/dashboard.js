@@ -499,7 +499,7 @@ export const getSalesAndPurchaseData = async (req, res) => {
     purchaseOrderData.forEach((sale) => {
       if (sale.delivery_date !== "To be updated") {
         console.log("purchaseOrderDate: ", sale.delivery_date);
-        const [day, month, year] = sale.delivery_date.split("/").map(Number);
+        const [month, day, year] = sale.delivery_date.split("/").map(Number);
         const deliveryDate = new Date(year, month - 1, day); // Months are 0-indexed in JavaScript
 
         const monthName = deliveryDate.toLocaleString("default", {
@@ -515,7 +515,7 @@ export const getSalesAndPurchaseData = async (req, res) => {
     salesOrderData.forEach((sale) => {
       if (sale.delivery_date !== "To be updated") {
         console.log("salesOrderDate: ", sale.delivery_date);
-        const [day, month, year] = sale.delivery_date.split("/").map(Number);
+        const [month, day, year] = sale.delivery_date.split("/").map(Number);
         const deliveryDate = new Date(year, month - 1, day); // Months are 0-indexed in JavaScript
 
         const monthName = deliveryDate.toLocaleString("default", {
